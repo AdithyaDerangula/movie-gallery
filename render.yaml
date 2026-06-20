@@ -30,7 +30,7 @@ services:
           name: movies-postgres
           property: password
       - key: KC_PROXY_HEADERS
-        value: x-forwarded
+        value: xforwarded
       - key: KC_HTTP_ENABLED
         value: "true"
 
