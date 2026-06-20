@@ -1,0 +1,72 @@
+services:
+  # 1. Keycloak Authentication Service
+  - type: web
+    name: movies-keycloak
+    plan: free
+    runtime: docker
+    dockerContext: ./keycloak
+    dockerfilePath: ./keycloak/Dockerfile
+    envVars:
+      - key: KC_BOOTSTRAP_ADMIN_USERNAME
+        value: admin
+      - key: KC_BOOTSTRAP_ADMIN_PASSWORD
+        value: admin
+      - key: KC_DB
+        value: postgres
+      - key: KC_DB_URL_HOST
+        fromDatabase:
+          name: movies-postgres
+          property: host
+      - key: KC_DB_URL_DATABASE
+        fromDatabase:
+          name: movies-postgres
+          property: database
+      - key: KC_DB_USERNAME
+        fromDatabase:
+          name: movies-postgres
+          property: user
+      - key: KC_DB_PASSWORD
+        fromDatabase:
+          name: movies-postgres
+          property: password
+      - key: KC_PROXY_HEADERS
+        value: x-forwarded
+      - key: KC_HTTP_ENABLED
+        value: "true"
+
+  # 2. Spring Boot Backend API
+  - type: web
+    name: movies-api
+    plan: free
+    runtime: docker
+    dockerContext: ./movies-api
+    dockerfilePath: ./movies-api/Dockerfile
+    envVars:
+      - key: MONGODB_URI
+        sync: false # Render will prompt you to enter your MongoDB Atlas URI
+      - key: KEYCLOAK_ISSUER_URI
+        sync: false # Render will prompt you to enter your Keycloak Issuer URL (e.g. https://movies-keycloak.onrender.com/realms/company-services)
+      - key: PORT
+        value: "9080"
+
+  # 3. React Frontend UI
+  - type: web
+    name: movies-ui
+    plan: free
+    runtime: static
+    buildCommand: "cd movies-ui && npm install && npm run build"
+    staticPublishPath: "./movies-ui/build"
+    envVars:
+      - key: REACT_APP_KEYCLOAK_BASE_URL
+        sync: false # Render will prompt you for the public Keycloak URL
+      - key: REACT_APP_API_BASE_URL
+        sync: false # Render will prompt you for the public Spring Boot API URL
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  # Managed PostgreSQL Database for Keycloak
+  - name: movies-postgres
+    plan: free
