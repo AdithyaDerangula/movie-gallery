@@ -19,11 +19,11 @@ COPY --from=builder --chown=keycloak:keycloak /opt/keycloak/ /opt/keycloak/
 COPY --chown=keycloak:keycloak company-services-realm.json /opt/keycloak/data/import/
 
 # Restrict JVM memory so Keycloak runs comfortably within Render's 512MB free tier
-ENV JAVA_OPTS_APPEND="-Xms128m -Xmx350m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=128M"
+ENV JAVA_OPTS_APPEND="-Xms64m -Xmx256m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256M"
 
 # Runtime environment settings
 ENV KC_DB=postgres
-ENV KC_PROXY_HEADERS=x-forwarded
+ENV KC_PROXY_HEADERS=xforwarded
 ENV KC_HTTP_ENABLED=true
 
 # Start Keycloak - since it's pre-built for postgres, it will skip auto-build and start instantly
