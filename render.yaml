@@ -48,6 +48,8 @@ services:
         sync: false # Render will prompt you to enter your MongoDB Atlas URI
       - key: KEYCLOAK_ISSUER_URI
         sync: false # Render will prompt you to enter your Keycloak Issuer URL (e.g. https://movies-keycloak.onrender.com/realms/company-services)
+      - key: APP_CORS_ALLOWED_ORIGINS
+        sync: false # Render will prompt you to enter your public movies-ui URL
       - key: PORT
         value: "9080"
 
