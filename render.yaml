@@ -52,7 +52,6 @@ services:
   # 3. React Frontend UI
   - type: web
     name: movies-ui
-    plan: free
     runtime: static
     buildCommand: "cd movies-ui && npm install && npm run build"
     staticPublishPath: "./movies-ui/build"
