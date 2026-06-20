@@ -13,7 +13,7 @@ RUN /opt/keycloak/bin/kc.sh build
 
 # Stage 2: Final runtime phase
 FROM quay.io/keycloak/keycloak:26.4.7
-COPY --from=builder /opt/keycloak/ /opt/keycloak/
+COPY --from=builder --chown=keycloak:keycloak /opt/keycloak/ /opt/keycloak/
 
 # Copy the realm file and ensure the 'keycloak' user owns it for reading
 COPY --chown=keycloak:keycloak company-services-realm.json /opt/keycloak/data/import/
